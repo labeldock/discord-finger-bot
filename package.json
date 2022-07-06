@@ -1,0 +1,42 @@
+{
+  "name": "discord-finger-bot",
+  "version": "1.0.0",
+  "description": "Made to make a promise to friends",
+  "main": "index.js",
+  "scripts": {
+    "dev": "dotenv -e .env.development node server.js",
+    "test": "echo $(dotenv -p NODE_ENV)"
+  },
+  "dependencies": {
+    "axios": "^0.27.2",
+    "discord.js": "^13.8.1",
+    "dotenv-cli": "^6.0.0",
+    "express": "^4.18.1",
+    "moment": "^2.29.3",
+    "nedb": "^1.8.0",
+    "qs": "^6.10.3",
+    "react": "^18.0.0",
+    "react-dom": "^18.0.0",
+    "sass": "^1.51.0"
+  },
+  "devDependencies": {
+    "@types/react": "^18.0.0",
+    "@types/react-dom": "^18.0.0",
+    "@vitejs/plugin-react": "^1.3.0",
+    "typescript": "^4.6.3",
+    "vite": "^2.9.5"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/labeldock/discord-finger-bot.git"
+  },
+  "keywords": [
+    "discord"
+  ],
+  "author": "AHN HO JUNG (labeldock@me.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/labeldock/discord-finger-bot/issues"
+  },
+  "homepage": "https://github.com/labeldock/discord-finger-bot#readme"
+}
