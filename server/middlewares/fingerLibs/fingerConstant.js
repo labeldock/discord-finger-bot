@@ -1,0 +1,22 @@
+const FINGER_ACTION = {
+  ACCEPT: "FIN_ACCEPT",
+  MAYBE: "FIN_MAYBE",
+  DONT: "FIN_DONT",
+}
+
+const STARTER_ACTION = {
+  CANCEL: "STA_CANCEL",
+  DEPLOY: "STA_DEPLOY",
+}
+
+const FINGER_ACTION_EMOJI = {
+  ACCEPT: "🤗",
+  MAYBE: "😅",
+  DONT: "😢",
+}
+
+module.exports = {
+  FINGER_ACTION,
+  STARTER_ACTION,
+  FINGER_ACTION_EMOJI,
+}

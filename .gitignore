@@ -104,3 +104,4 @@ dist
 .tern-port
 
 env/config.json
+db/*.json

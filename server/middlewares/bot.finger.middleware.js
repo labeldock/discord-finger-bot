@@ -1,8 +1,8 @@
 const Router = require("express")
 const { buildBotToken } = require('../../env/config.json')
 const { Client, Intents } = require('discord.js');
-const { useMessageInteraction } = require('./bot.finger/fingerBot')
-
+const { startFingerBot } = require('./fingerLibs/main')
+const moment = require('moment')
 module.exports = async serverState => {
   const router = Router();
 
@@ -19,6 +19,9 @@ module.exports = async serverState => {
   });
 
   client.on('ready', () => {
+    serverState.discordTime = moment(client.readyAt).valueOf()
+    serverState.discordTimeOffest = Date.now() - serverState.discordTime 
+    
     /*
     ClientUser {
       id: string,
@@ -38,7 +41,7 @@ module.exports = async serverState => {
     console.log(`봇이 준비됐습니다 ${bot.tag}`)
 
     try {
-      useMessageInteraction({ client, bot })
+      startFingerBot({ client, bot, store:serverState.store })
     } catch(error) {
       console.log(error)
       console.log(`${bot.tag} 장비를 정지합니까 ?`)

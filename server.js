@@ -2,11 +2,17 @@ const fs = require('fs')
 const path = require('path')
 const express = require('express')
 const { createServer: createViteServer } = require('vite')
-const VITE_SERVER_PORT = Number(process.env.VITE_SERVER_PORT)
+const { createServer: createBotServer } = require('./server/app.middleware')
+const VITE_WEB_HOST = process.env.VITE_WEB_HOST
+const VITE_WEB_PORT = Number(process.env.VITE_WEB_PORT)
+const VITE_HOT_PORT = Number(process.env.VITE_HOT_PORT)
+
+function resolve (p){
+  return path.resolve(__dirname, p)
+}
 
 async function createServer() {
   const app = express()
-  const { createServer: createBotServer } = require('./server/app.middleware')
 
   const bot = await createBotServer()
   app.use(bot.middlewares)
@@ -14,7 +20,18 @@ async function createServer() {
   // 미들웨어 모드로 Vite 서버를 생성하고 애플리케이션의 타입을 'custom'으로 설정합니다.
   // 이는 Vite의 자체 HTML 제공 로직을 비활성화하고, 상위 서버에서 이를 제어할 수 있도록 합니다.
   const vite = await createViteServer({
-    server: { middlewareMode: 'spa' },
+    server: { 
+      middlewareMode: true,
+      watch: {
+        // During tests we edit the files too fast and sometimes chokidar
+        // misses change events, so enforce polling for consistency
+        usePolling: true,
+        interval: 100
+      },
+      hmr: {
+        port: VITE_HOT_PORT
+      }
+    },
     appType: 'custom'
   })
   
@@ -22,10 +39,20 @@ async function createServer() {
   app.use(vite.middlewares)
 
   app.use('*', async (req, res) => {
-    // index.html 파일을 제공합니다 - 아래에서 이를 다룰 예정입니다.
+    try {
+      let html = fs.readFileSync(resolve('./index.html'),'utf-8');
+      html = await vite.transformIndexHtml(req.url, html)
+      res.status(200).set({ 'Content-Type': 'text/html' }).end(html);
+    } catch(e) {
+      vite && vite.ssrFixStacktrace(e)
+      console.log(e.stack)
+      res.status(500).end(e.stack)
+    }
   })
 
-  app.listen(VITE_SERVER_PORT)
+  app.listen(VITE_WEB_PORT, ()=>{
+    console.log(`VITE ${VITE_WEB_HOST}:${VITE_WEB_PORT}`)
+  })
 }
 
 createServer()
