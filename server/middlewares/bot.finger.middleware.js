@@ -3,6 +3,7 @@ const { buildBotToken } = require('../../env/config.json')
 const { Client, Intents } = require('discord.js');
 const { startFingerBot } = require('./fingerLibs/main')
 const moment = require('moment')
+
 module.exports = async serverState => {
   const router = Router();
 

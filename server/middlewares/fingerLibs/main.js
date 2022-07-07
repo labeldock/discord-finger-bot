@@ -7,6 +7,13 @@ function startFingerBot({ client, bot }){
     parseCommandMessage
   } = useCommandMessageHelper(bot)
   
+
+  
+  setInterval(() =>{
+    
+      
+  }, 1000 * 60 * 15)
+
   //mentionHelper(event)
   /*
     channelId: '',

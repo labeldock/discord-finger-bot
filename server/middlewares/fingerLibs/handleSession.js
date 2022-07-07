@@ -1,3 +1,5 @@
+const { hostname } = require('../../../env/config.json')
+
 const { 
   MessageActionRow, 
   MessageButton,
@@ -17,7 +19,7 @@ const {
 const moment = require('moment')
 require('moment/locale/ko')
 
-const webUrl = `${process.env.VITE_WEB_HOST}:${process.env.VITE_WEB_PORT}`
+const webUrl = `${hostname}:${process.env.VITE_WEB_PORT}`
 const candidateUrl = `${webUrl}/candidate`
 
 
@@ -156,6 +158,7 @@ async function handleCreatePromiseSession ({ client, candiateSession, promisePay
     intentionMessageId,
     promisePayload,
     starterId,
+    uiDisabled:false,
   })
 
   await setupMessage.delete({ timeout: 20000 });
@@ -165,6 +168,7 @@ async function handleCreatePromiseSession ({ client, candiateSession, promisePay
   updatePromiseMessage({ intentionMessage, fingerSessionId })
 }
 
+// 약속 창의 메시지를 업데이트 합니다.
 async function updatePromiseMessage ({ intentionMessage, fingerSessionId }){
   const [ promiseSession ] = await dbPromiseSession.find({ fingerSessionId })
 
@@ -172,7 +176,7 @@ async function updatePromiseMessage ({ intentionMessage, fingerSessionId }){
     throw new Error("Promise session not found")
   }
 
-  const { starterId, promisePayload:{ title, description, startDate, startTime } } = promiseSession
+  const { starterId, uiDisabled, promisePayload:{ title, description, startDate, startTime } } = promiseSession
   const promiseUsers = await dbUserState.find({ fingerSessionId })
   const acceptUsers = promiseUsers.filter(({ promiseState })=>promiseState===FINGER_ACTION.ACCEPT)
   const maybeUsers = promiseUsers.filter(({ promiseState })=>promiseState===FINGER_ACTION.MAYBE)
@@ -184,7 +188,6 @@ async function updatePromiseMessage ({ intentionMessage, fingerSessionId }){
   descriptionBuilding += ` / 상태 : ${moment(`${startDate} ${startTime}`,'YYYY-MM-DD HH:mm').fromNow()} 시작`
   
   if(description) { descriptionBuilding += `\n\n${description}\n\n` }
-  
   
   if(acceptUsers.length){ descriptionBuilding += `\n\n${FINGER_ACTION_EMOJI.ACCEPT}참여해요!(${acceptUsers.length}명)\n${acceptUsers.map(({ userId })=>`<@${userId}>`).join(', ')}` }
   if(maybeUsers.length ){ descriptionBuilding += `\n\n${FINGER_ACTION_EMOJI.MAYBE }아마도요(${maybeUsers.length}명)\n${maybeUsers.map(({ userId })=>`<@${userId}>`).join(', ')}` }
@@ -200,12 +203,8 @@ async function updatePromiseMessage ({ intentionMessage, fingerSessionId }){
     ],
     description:descriptionBuilding,
   }
+  const buttonsComponent = reduceMessageActionRow(createUserIntentionButtons({ fingerSessionId, disabled:uiDisabled }))
 
-
-  
-
-  const buttonsComponent = reduceMessageActionRow(createUserIntentionButtons({ fingerSessionId, disabled:false }))
-  
   await intentionMessage.edit({ embeds:[embed1] })
   await intentionMessage.edit({ components:[buttonsComponent] })
 }

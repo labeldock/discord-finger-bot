@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "dotenv -e .env.development node server.js",
+    "stage": "dotenv -e .env.stage node server.js",
     "test": "echo $(dotenv -p NODE_ENV)"
   },
   "dependencies": {

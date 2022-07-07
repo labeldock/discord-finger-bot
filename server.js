@@ -3,7 +3,8 @@ const path = require('path')
 const express = require('express')
 const { createServer: createViteServer } = require('vite')
 const { createServer: createBotServer } = require('./server/app.middleware')
-const VITE_WEB_HOST = process.env.VITE_WEB_HOST
+const { hostname } = require('./env/config.json')
+
 const VITE_WEB_PORT = Number(process.env.VITE_WEB_PORT)
 const VITE_HOT_PORT = Number(process.env.VITE_HOT_PORT)
 
@@ -28,7 +29,7 @@ async function createServer() {
         usePolling: true,
         interval: 100
       },
-      hmr: {
+      hmr: /stage|production/.test(process.env.SERVE_ENV) ? false : {
         port: VITE_HOT_PORT
       }
     },
@@ -51,7 +52,7 @@ async function createServer() {
   })
 
   app.listen(VITE_WEB_PORT, ()=>{
-    console.log(`VITE ${VITE_WEB_HOST}:${VITE_WEB_PORT}`)
+    console.log(`VITE ${hostname}:${VITE_WEB_PORT}`)
   })
 }
 
