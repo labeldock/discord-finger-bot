@@ -1,5 +1,6 @@
 const path = require('path')
 const { handleCreateSession, handleButtonSession } = require('./handleSession')
+const { defineEmbed } = require('./fingerModel')
 
 function startFingerBot({ client, bot }){
   const {
@@ -7,11 +8,8 @@ function startFingerBot({ client, bot }){
     parseCommandMessage
   } = useCommandMessageHelper(bot)
   
-
-  
   setInterval(() =>{
     
-      
   }, 1000 * 60 * 15)
 
   //mentionHelper(event)
@@ -39,6 +37,7 @@ function startFingerBot({ client, bot }){
   client.on('messageCreate', async messageEvent => {
     if(isNeverMindMessage(messageEvent)) return;
     const parsed = parseCommandMessage(messageEvent)
+
     if(parsed.mentioned){
       // 아무것도 입력하지 않는경우
       if(parsed.message.length === 0 || /^(\?|help)$/.test(parsed.message)){
