@@ -29,7 +29,7 @@ async function createServer() {
         usePolling: true,
         interval: 100
       },
-      hmr: /stage|production/.test(process.env.SERVE_ENV) ? false : {
+      hmr: {
         port: VITE_HOT_PORT
       }
     },
