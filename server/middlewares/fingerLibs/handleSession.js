@@ -77,11 +77,13 @@ async function handleButtonSession ({ interaction, parsed }){
         return false
       }
       
+      interaction.deferUpdate()
+
       const { 
         intentionMessageId,
         setupMessageId,
       } = data 
-    
+      
       return Promise.all([
         interaction.channel.messages.fetch(intentionMessageId),
         interaction.channel.messages.fetch(setupMessageId)
@@ -94,28 +96,29 @@ async function handleButtonSession ({ interaction, parsed }){
       }).then(async ()=>{
         await dbCandidateSession.remove({ fingerSessionId })
       }).then(async ()=>{
-        interaction.deferUpdate()
         return true
       })
       break
     case FINGER_ACTION.ACCEPT:
     case FINGER_ACTION.MAYBE:
     case FINGER_ACTION.DONT:
+      interaction.deferUpdate()
       insertUserState({ fingerSessionId, user:interaction.user, promiseState:fingerAction })
       await updatePromiseMessage({ 
         intentionMessage:interaction.message, 
         fingerSessionId 
       })
-      interaction.deferUpdate()
+      
       return true
       break
     case FINGER_ACTION.CANCEL:
+      interaction.deferUpdate()
       await dbUserState.remove({ fingerSessionId, userId:interaction.user.id })
       await updatePromiseMessage({ 
         intentionMessage:interaction.message, 
         fingerSessionId 
       })
-      interaction.deferUpdate()
+      
       return true
       break
     default:

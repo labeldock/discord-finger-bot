@@ -33,7 +33,7 @@ export default function CandidatePage() {
 
   const ACTIVE_TIME = useMemo(()=>{
     return {
-      SOON:tzMoment().startOf('hour').add(1,'hour').format('hh:mm'),
+      SOON:tzMoment().startOf('hour').add(1,'hour').format('HH:mm'),
     }
   }, [])
 
@@ -45,7 +45,7 @@ export default function CandidatePage() {
   })
 
   const fromText = useMemo(()=>{
-    return tzMoment(`${form.startDate} ${form.startTime}`, 'YYYY-MM-DD hh:mm').fromNow();
+    return tzMoment(`${form.startDate} ${form.startTime}`, 'YYYY-MM-DD HH:mm').fromNow();
   }, [form])
 
   const validateMessage = useMemo(()=>{
@@ -53,9 +53,9 @@ export default function CandidatePage() {
       return "약속제목을 반드시 입력해 주세요"
     }
     const nowMoment = tzMoment()
-    const setMoment = tzMoment(`${form.startDate} ${form.startTime}`, 'YYYY-MM-DD hh:mm')
+    const setMoment = tzMoment(`${form.startDate} ${form.startTime}`, 'YYYY-MM-DD HH:mm')
     const diffHour = setMoment.diff(nowMoment, 'hour')
-    const diffDay = setMoment.diff(nowMoment, 'day')
+    const diffDay = setMoment.diff(nowMoment, 'days')
 
     if(diffHour < -2) {
       return "너무 옛날은 안됩니다. \"오늘\" \"곧\" 시간에 가깝게 입력해 주세요."
@@ -67,7 +67,22 @@ export default function CandidatePage() {
 
   }, [form])
 
+  function formAddTime (value, unit){
+    const before = tzMoment(form.startTime, 'HH:mm')
+    const after = tzMoment(form.startTime, 'HH:mm').add(value,unit)
 
+    // 날짜 변경 감지를 위한 방법;
+    const beforeDay = before.clone().startOf('day')
+    const afterDay = after.clone().startOf('day')
+    const incDay = afterDay.diff(beforeDay, 'days')
+
+    setForm({
+      ...form,
+      startDate:tzMoment(form.startDate).add(incDay, 'day').format('YYYY-MM-DD'),
+      startTime:tzMoment(form.startTime, 'HH:mm').add(value,unit).format('HH:mm'),
+    })
+  }
+  
   async function handleSubmit (){
     postPromise({ fingerSessionId, data:form }).then(()=>{
       navigate(`/success/${encodeURIComponent(`약속을 개시했습니다`)}`)
@@ -136,11 +151,11 @@ export default function CandidatePage() {
                   </button>
                 </div>
               </div>
-              <div className="col-auto">
-                <button type="button" className="btn btn-outline-secondary" onClick={()=>setForm({...form, startTime:tzMoment(form.startTime, 'hh:mm').add(-30,'m').format('hh:mm')})}>-30분</button>
-                <button type="button" className="btn btn-outline-dark" onClick={()=>setForm({...form, startTime:tzMoment(form.startTime, 'hh:mm').add(-1,'h').format('hh:mm')})}>-1시간</button>
-                <button type="button" className="btn btn-outline-primary" onClick={()=>setForm({...form, startTime:tzMoment(form.startTime, 'hh:mm').add(1,'h').format('hh:mm')})}>+1시간</button>
-                <button type="button" className="btn btn-outline-info" onClick={()=>setForm({...form, startTime:tzMoment(form.startTime, 'hh:mm').add(30,'m').format('hh:mm')})}>+30분</button>
+              <div className="col-auto finger-btn-group-mgs">
+                <button type="button" className="btn btn-outline-secondary" onClick={()=>formAddTime(-30,'m')}>-30분</button>
+                <button type="button" className="btn btn-outline-dark" onClick={()=>formAddTime(-1,'h')}>-1시간</button>
+                <button type="button" className="btn btn-outline-primary" onClick={()=>formAddTime(1,'h')}>+1시간</button>
+                <button type="button" className="btn btn-outline-info" onClick={()=>formAddTime(30,'m')}>+30분</button>
               </div>
               <div className="col-auto">
                 <input type="time" value={form.startTime} onChange={({ target:{ value:startTime } })=>setForm({...form, startTime })} />

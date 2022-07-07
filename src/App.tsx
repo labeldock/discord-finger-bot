@@ -54,7 +54,7 @@ function CurrentTime (){
     return tzMoment().format('ll hh:mm:ss')
   }, 1000, true)
   return (
-    <>시간 : {currentTime}</>
+    <>서버동기화시간 : {currentTime}</>
   )
 }
 
