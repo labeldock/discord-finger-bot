@@ -6,6 +6,12 @@
   "scripts": {
     "dev": "dotenv -e .env.development node server.js",
     "stage": "dotenv -e .env.stage node server.js",
+    "pm:start": "dotenv -e .env.stage \"pm2 start --name=discord-finger-bot --restart-delay=15000 server.js\"",
+    "pm:stop": "pm2 stop discord-finger-bot",
+    "pm:m": "pm2 monit",
+    "pm:l": "pm2 logs discord-finger-bot",
+    "pm:r": "pm2 reload discord-finger-bot",
+    "pm:d": "pm2 delete discord-finger-bot",
     "test": "echo $(dotenv -p NODE_ENV)"
   },
   "dependencies": {
@@ -24,7 +30,8 @@
   "devDependencies": {
     "@types/react": "^18.0.0",
     "@types/react-dom": "^18.0.0",
-    "@vitejs/plugin-react": "^1.3.0",
+    "@vitejs/plugin-react": "^1.3.0", 
+    "pm2": "^5.2.0",
     "typescript": "^4.7.4",
     "vite": "^2.9.13"
   },
