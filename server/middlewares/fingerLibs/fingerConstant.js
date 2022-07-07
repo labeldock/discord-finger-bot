@@ -2,6 +2,7 @@ const FINGER_ACTION = {
   ACCEPT: "FIN_ACCEPT",
   MAYBE: "FIN_MAYBE",
   DONT: "FIN_DONT",
+  CANCEL: "FIN_CANCEL",
 }
 
 const STARTER_ACTION = {
@@ -13,6 +14,7 @@ const FINGER_ACTION_EMOJI = {
   ACCEPT: "🤗",
   MAYBE: "😅",
   DONT: "😢",
+  CANCEL: "💤",
 }
 
 module.exports = {

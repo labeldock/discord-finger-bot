@@ -4,11 +4,11 @@ const dir = path.join(__dirname, '..', '..', '..', 'db')
 
 //
 const dbCandidateSession = promisedNedb({ dir, filename:"CandidateSession.json" })
-const dbReservedSession = promisedNedb({ dir, filename:"ReservedSession.json" })
+const dbPromiseSession = promisedNedb({ dir, filename:"PromiseSession.json" })
 const dbUserState = promisedNedb({ dir, filename:"UserState.json" })
 
 module.exports = {
   dbCandidateSession,
-  dbReservedSession,
+  dbPromiseSession,
   dbUserState,
 }

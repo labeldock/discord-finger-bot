@@ -47,6 +47,8 @@ function startFingerBot({ client, bot }){
         setTimeout(()=>{
           helpMessage.delete({ timeout: 20000 });
         },10000)
+        
+        console.log("parsed.message", parsed.message)
 
       } else if(parsed.message === "약속"){
         handleCreateSession({ messageEvent, parsed })

@@ -7,3 +7,21 @@ export async function fetchDiscordTime (){
 export async function fetchCandidateData ({ fingerSessionId }){
   return await fetch.get(`/api/candidate/${fingerSessionId}`)
 }
+
+export async function postPromise ({ 
+  fingerSessionId,
+  data,
+}){
+  const { 
+    title,
+    description,
+    startDate,
+    startTime,
+  } = data
+  return await fetch.post(`/api/candidate/${fingerSessionId}/promise`, {
+    title,
+    description,
+    startDate,
+    startTime,
+  })
+}

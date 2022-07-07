@@ -6,5 +6,10 @@ export default function Home() {
     console.log('use effect')
   })
   
-  return <h1 className="container">Home</h1>
+  return  (
+    <div className="container">
+      <h1>안녕하세요</h1>
+      <p>아직 설명이 없습니다</p>
+    </div>
+  )
 }

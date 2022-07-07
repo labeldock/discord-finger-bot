@@ -21,7 +21,7 @@ module.exports = async serverState => {
   client.on('ready', () => {
     serverState.discordTime = moment(client.readyAt).valueOf()
     serverState.discordTimeOffest = Date.now() - serverState.discordTime 
-    
+    serverState.discordClient = client
     /*
     ClientUser {
       id: string,
