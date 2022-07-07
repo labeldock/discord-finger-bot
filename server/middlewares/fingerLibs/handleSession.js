@@ -14,6 +14,9 @@ const {
   dbUserState,
 } = require("./fingerStore")
 
+const moment = require('moment')
+require('moment/locale/ko')
+
 const webUrl = `${process.env.VITE_WEB_HOST}:${process.env.VITE_WEB_PORT}`
 const candidateUrl = `${webUrl}/candidate`
 
@@ -33,7 +36,7 @@ async function handleCreateSession ({ messageEvent }){
   const starterEmbed = defineEmbed({ 
     color: 'YELLOW',
     title: '핑거봇이 약속 만들기를 도와드립니다',
-    description: `외부 브라우져를 띄어 약속을 완성합니다.\n\n[클릭 하세요!](${candidateUrl}/${fingerSessionId})\n\n`,
+    description: `외부 브라우져를 띄어 약속을 완성합니다.\n\n`,
   })
  
   const intentionMessageObject = await messageEvent.channel.send({
@@ -178,11 +181,9 @@ async function updatePromiseMessage ({ intentionMessage, fingerSessionId }){
   let descriptionBuilding = ''
 
   descriptionBuilding += `방장 : <@${starterId}>`
-  descriptionBuilding += ` / 상태 : 약속 시간 전`
+  descriptionBuilding += ` / 상태 : ${moment(`${startDate} ${startTime}`,'YYYY-MM-DD HH:mm').fromNow()} 시작`
   
   if(description) { descriptionBuilding += `\n\n${description}\n\n` }
-  
-  
   
   
   if(acceptUsers.length){ descriptionBuilding += `\n\n${FINGER_ACTION_EMOJI.ACCEPT}참여해요!(${acceptUsers.length}명)\n${acceptUsers.map(({ userId })=>`<@${userId}>`).join(', ')}` }
